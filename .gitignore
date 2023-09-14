@@ -1,5 +1,5 @@
-./local
-
-running_models/fold_1
-
-
+./local/*
+runnning_models/*
+runnning_preds/*
+runs/*
+.jupyter/*
