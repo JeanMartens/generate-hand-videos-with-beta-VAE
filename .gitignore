@@ -1,0 +1,16 @@
+./local/*
+running_models/*
+running_preds/*
+runs/*
+.jupyter/*
+.local/
+.viminfo
+.cache/*
+.config/*
+.gitconfig
+.ipython/*
+.jarviscloud/*
+.kaggle/*
+running_models/*
+**/.ipynb_checkpoints/*
+**/__pycache__/*
