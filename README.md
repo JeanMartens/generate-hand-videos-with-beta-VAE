@@ -1,8 +1,13 @@
-# Baseline
-My deep learning CV classification baseline using accelerate for parallel computing.
+# Training and infering of an AutoEncoder for Image Generation
 
-This repo is made for me to be able to start project and DL competitions fast but feel free to use it if you want to.
+With this repository, you can train and generate data (MNIST here) for all kinds of encoder. This can also be use to pretrain a model in a Unsupervised learning fashion.
+This is what this can get you:
+![](../plots/efficientnet_b0.png)
+![](../plots/resnet50.png)
 
-The notebook folder is made for the user to explore his data and so is left blank. The model folder is also a way to store models or checkpoints.
+Feel free to use this repo for anything you like but since this is a project simply to build my intuition for VAE and GANs, I advise you code it yourself for the same purpose.
+If you like the structure of the code, you can find my Computer Vision baseline here: 
 
-
+Architecture used and the reason I can plot the points:
+![](../plots/first_explaination.png)
+![](../plots/second_explanation.png)
