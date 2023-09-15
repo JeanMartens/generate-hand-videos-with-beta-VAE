@@ -6,12 +6,13 @@ import cv2
 class Hyperparams:
     
     #Training Params
-    lr = 1e-4
-    num_epochs = 10
+    lr = 1e-3
+    num_epochs = 30
     batch_size_train = 256
     batch_size_valid = 256
     weight_decay = 1e-5
     img_shape = (28,28,1)
+    latent_space = 10
 
 
     #Model params
@@ -26,7 +27,7 @@ class Hyperparams:
     random_state = 19
 
     normalise_transform = transforms.Compose([
-        transforms.Normalize(mean=(0.0), std=(1.0))
+        transforms.Normalize(mean=(33.385964741253645), std=(78.6543736268941))
         ])
 
     augment_transform = A.Compose([

@@ -8,33 +8,38 @@ class AutoEncoder(nn.Module):
         
         # encoder
         self.encoder = timm.create_model(encoder_name,in_chans=1, pretrained=True,)
-        # num_embeddings  = self.encoder.classifier.in_features
+        num_embeddings  = self.encoder.classifier.in_features
         modules = list(self.encoder.children())[:-1]
         self.encoder = nn.Sequential(*modules)
         
-        self.latent_layer = nn.Linear(1280, latent_dim)
+        self.latent_layer = nn.Linear(num_embeddings, latent_dim)
         
         # decoder
-        self.decoder_input = nn.Linear(latent_dim, 1280)
+        self.decoder_input = nn.Linear(latent_dim, num_embeddings)
         
         self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(1280, 512, kernel_size=2, stride=2),  # 1x1 to 2x2
+            nn.ConvTranspose2d(num_embeddings, 512, kernel_size=2, stride=2),  # 1x1 to 2x2
+            nn.BatchNorm2d(512),
             nn.ReLU(),
             
             nn.ConvTranspose2d(512, 256, kernel_size=2, stride=2),  # 2x2 to 4x4
+            nn.BatchNorm2d(256),
             nn.ReLU(),
             
             nn.ConvTranspose2d(256, 128, kernel_size=2, stride=2),  # 4x4 to 8x8
+            nn.BatchNorm2d(128),
             nn.ReLU(),
             
             nn.ConvTranspose2d(128, 64, kernel_size=2, stride=2),  # 8x8 to 16x16
+            nn.BatchNorm2d(64),
             nn.ReLU(),
-
-            nn.ConvTranspose2d(64, 1, kernel_size=2, stride=2),  # 8x8 to 16x16
+        
+            nn.ConvTranspose2d(64, 1, kernel_size=2, stride=2),  # 16x16 to 32x32
             nn.ReLU(),
-
-            nn.Conv2d(1,1, kernel_size=5, stride=1, padding =0),
+        
+            nn.Conv2d(1, 1, kernel_size=5, stride=1, padding=0),
         )
+
 
         
     def forward(self, x):
@@ -57,4 +62,5 @@ class AutoEncoder(nn.Module):
         x = x.view(x.size(0), -1, 1, 1)
         x = self.decoder(x)
         return x
+
 

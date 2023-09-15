@@ -24,15 +24,18 @@ class ModelTrainer:
         self.criterion = criterion
         self.model_naming_function = model_naming_function
 
-    def metric_function(self, outputs, labels, epsilon=0.001, threshold = 0.5):
-        self.threshold = threshold
-        outputs = torch.sigmoid(outputs)
-        labels = labels.view(-1)
-        outputs = (outputs > self.threshold).float().view(-1)
-        inter = (labels * outputs).sum()
-        den = labels.sum() + outputs.sum()
-        dice = ((2. * inter + epsilon) / (den + epsilon))
-        return dice
+    # def metric_function(self, outputs, labels, epsilon=0.001, threshold = 0.5):
+        # self.threshold = threshold
+        # outputs = torch.sigmoid(outputs)
+        # labels = (labels.view(-1) != 0)
+        # outputs = (outputs > self.threshold).float().view(-1)
+        # inter = (labels * outputs).sum()
+        # den = labels.sum() + outputs.sum()
+        # dice = ((2. * inter + epsilon) / (den + epsilon))
+        # return dice
+
+    def metric_function(self,outputs, labels):
+        return torch.mean((labels - outputs)**2)
 
     def seed_everything(self, seed):
         os.environ['PYTHONHASHSEED'] = str(seed)
@@ -54,12 +57,12 @@ class ModelTrainer:
         
         for i, data in enumerate(stream):
             inputs, labels, weights = data
-            inputs, labels, weights = inputs.float(), labels.long(), weights.float()
+            inputs, labels, weights = inputs.float(), labels.float(), weights.float()
             
             self.optimizer.zero_grad()
             outputs = self.model(inputs)
             
-            loss = self.criterion(outputs, labels.float())
+            loss = self.criterion(outputs, labels)
             loss = loss.sum(dim=0) * weights
             loss = loss.sum()
             train_running_loss += loss.item()
@@ -82,10 +85,10 @@ class ModelTrainer:
         with torch.no_grad():
             for i, data in enumerate(stream):
                 inputs, labels ,weights = data
-                inputs, labels, weights = inputs.float(), labels.long(), weights.float()
+                inputs, labels, weights = inputs.float(), labels.float(), weights.float()
                 
                 outputs = self.model(inputs)
-                loss = self.criterion(outputs, labels.float())
+                loss = self.criterion(outputs, labels)
                 loss = loss.sum(dim=0) * weights
                 loss = loss.sum()
                 valid_running_loss += loss.item()

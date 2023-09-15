@@ -29,7 +29,6 @@ class PreprocessedDataset(Dataset):
         index = self.metadata_df.loc[idx, 'index']
         
         input = self.all_images[index,:,:]
-        input = (input != 0 ).astype(np.int8)
 
         #Load label
         # label = np.array(self.metadata_df.loc[idx, 'labels'])
@@ -43,17 +42,16 @@ class PreprocessedDataset(Dataset):
             input = transformed["image"]
 
         #Resize
-        resized = self.resize(image=input)
-        input = resized["image"]
+        # resized = self.resize(image=input)
+        # input = resized["image"]
 
             
         #To tensor and (Shape1, Shape2, channels) -> (channels, Shape1, Shape2)
-        label = torch.tensor(input).unsqueeze(0)
         input = torch.tensor(input).unsqueeze(0)
-        # label = torch.tensor(input)
 
         #Apply final transform (Usually Normalisation)
-        # if self.normalise_transform:
-        #     input = self.normalise_transform(input.float())
+        if self.normalise_transform:
+            input = self.normalise_transform(input.float())
+        label = input
 
         return input, label,weight
