@@ -63,4 +63,90 @@ class AutoEncoder(nn.Module):
         x = self.decoder(x)
         return x
 
+class VariationalAutoEncoder(nn.Module):
+    def __init__(self, encoder_name, latent_dim):
+        super(VariationalAutoEncoder, self).__init__()
+        
+        # encoder
+        self.encoder = timm.create_model(encoder_name, in_chans=1, pretrained=True,)
+        num_embeddings = self.encoder.classifier.in_features
+        modules = list(self.encoder.children())[:-1]
+        self.encoder = nn.Sequential(*modules)
+        
+        # Producing mean and log variance
+        self.mu_layer = nn.Linear(num_embeddings, latent_dim)
+        self.logvar_layer = nn.Linear(num_embeddings, latent_dim)
+        
+        # decoder
+        self.decoder_input = nn.Linear(latent_dim, num_embeddings)
+        
+        self.decoder = nn.Sequential(
+            nn.ConvTranspose2d(num_embeddings, 512, kernel_size=2, stride=2),
+            nn.BatchNorm2d(512),
+            nn.ReLU(),
+            
+            nn.ConvTranspose2d(512, 256, kernel_size=2, stride=2),
+            nn.BatchNorm2d(256),
+            nn.ReLU(),
+            
+            nn.ConvTranspose2d(256, 128, kernel_size=2, stride=2),
+            nn.BatchNorm2d(128),
+            nn.ReLU(),
+            
+            nn.ConvTranspose2d(128, 64, kernel_size=2, stride=2),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+        
+            nn.ConvTranspose2d(64, 1, kernel_size=2, stride=2),
+            nn.ReLU(),
+        
+            nn.Conv2d(1, 1, kernel_size=5, stride=1, padding=0),
+        )
 
+        self.norm = torch.distributions.Normal(0, 1)
+
+        
+    def reparameterize(self, x_mu, x_logvar, training=True):
+
+        x_std = torch.exp(x_logvar / 2)
+        if training:
+            z = x_mu + x_std * self.norm.sample(x_mu.shape).to(x_mu.device)
+        else:
+            z = x_mu
+        return z
+
+        
+    def forward(self, x):
+        x = self.encoder(x)
+        x = x.view(x.size(0), -1)
+        
+        x_mu = self.mu_layer(x)
+        x_logvar = self.logvar_layer(x)
+        
+        z = self.reparameterize(x_mu, x_logvar, training=self.training)
+        
+        x = self.decoder_input(z)
+        x = x.view(x.size(0), -1, 1, 1)
+        x = self.decoder(x)
+        
+        # Return reconstruction, mu, and logvar for loss calculation
+        return x , x_mu, x_logvar
+
+    def encode(self, x, get_stats = False ):
+        x = self.encoder(x)
+        x = x.view(x.size(0), -1)
+        x_mu = self.mu_layer(x)
+        x_std = self.logvar_layer(x)
+    
+        z = self.reparameterize(x_mu, x_std, training=self.training)
+        
+        if get_stats :
+            return z, x_mu,  torch.exp(x_std / 2)
+        else : 
+            return z
+
+    def decode(self, z):
+        x = self.decoder_input(z)
+        x = x.view(x.size(0), -1, 1, 1)
+        x = self.decoder(x)
+        return x

@@ -7,12 +7,12 @@ class Hyperparams:
     
     #Training Params
     lr = 1e-3
-    num_epochs = 30
+    num_epochs = 20
     batch_size_train = 256
     batch_size_valid = 256
     weight_decay = 1e-5
     img_shape = (28,28,1)
-    latent_space = 10
+    latent_space = 2
 
 
     #Model params
