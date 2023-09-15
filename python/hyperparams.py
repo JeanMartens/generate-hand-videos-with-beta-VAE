@@ -6,8 +6,8 @@ import cv2
 class Hyperparams:
     
     #Training Params
-    lr = 5e-5
-    num_epochs = 10
+    lr = 1e-3
+    num_epochs = 30
     batch_size_train = 256
     batch_size_valid = 256
     weight_decay = 1e-5

@@ -28,6 +28,7 @@ train_loaders, valid_loaders, splits_as_list = kfold_loaders(
         random_state=Hyperparams.random_state)
 
 criterion = nn.MSELoss()
+# criterion = nn.L1Loss()
 
 training_instance = ModelTrainer(create_model, train_loaders,valid_loaders,criterion)
 

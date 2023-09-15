@@ -19,22 +19,27 @@ class AutoEncoder(nn.Module):
         
         self.decoder = nn.Sequential(
             nn.ConvTranspose2d(num_embeddings, 512, kernel_size=2, stride=2),  # 1x1 to 2x2
+            nn.BatchNorm2d(512),
             nn.ReLU(),
             
             nn.ConvTranspose2d(512, 256, kernel_size=2, stride=2),  # 2x2 to 4x4
+            nn.BatchNorm2d(256),
             nn.ReLU(),
             
             nn.ConvTranspose2d(256, 128, kernel_size=2, stride=2),  # 4x4 to 8x8
+            nn.BatchNorm2d(128),
             nn.ReLU(),
             
             nn.ConvTranspose2d(128, 64, kernel_size=2, stride=2),  # 8x8 to 16x16
+            nn.BatchNorm2d(64),
             nn.ReLU(),
-
-            nn.ConvTranspose2d(64, 1, kernel_size=2, stride=2),  # 8x8 to 16x16
+        
+            nn.ConvTranspose2d(64, 1, kernel_size=2, stride=2),  # 16x16 to 32x32
             nn.ReLU(),
-
-            nn.Conv2d(1,1, kernel_size=5, stride=1, padding =0),
+        
+            nn.Conv2d(1, 1, kernel_size=5, stride=1, padding=0),
         )
+
 
         
     def forward(self, x):

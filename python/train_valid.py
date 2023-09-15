@@ -57,12 +57,12 @@ class ModelTrainer:
         
         for i, data in enumerate(stream):
             inputs, labels, weights = data
-            inputs, labels, weights = inputs.float(), labels.long(), weights.float()
+            inputs, labels, weights = inputs.float(), labels.float(), weights.float()
             
             self.optimizer.zero_grad()
             outputs = self.model(inputs)
             
-            loss = self.criterion(outputs, labels.float())
+            loss = self.criterion(outputs, labels)
             loss = loss.sum(dim=0) * weights
             loss = loss.sum()
             train_running_loss += loss.item()
@@ -85,10 +85,10 @@ class ModelTrainer:
         with torch.no_grad():
             for i, data in enumerate(stream):
                 inputs, labels ,weights = data
-                inputs, labels, weights = inputs.float(), labels.long(), weights.float()
+                inputs, labels, weights = inputs.float(), labels.float(), weights.float()
                 
                 outputs = self.model(inputs)
-                loss = self.criterion(outputs, labels.float())
+                loss = self.criterion(outputs, labels)
                 loss = loss.sum(dim=0) * weights
                 loss = loss.sum()
                 valid_running_loss += loss.item()
