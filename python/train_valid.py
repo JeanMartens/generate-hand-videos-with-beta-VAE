@@ -24,15 +24,18 @@ class ModelTrainer:
         self.criterion = criterion
         self.model_naming_function = model_naming_function
 
-    def metric_function(self, outputs, labels, epsilon=0.001, threshold = 0.5):
-        self.threshold = threshold
-        outputs = torch.sigmoid(outputs)
-        labels = labels.view(-1)
-        outputs = (outputs > self.threshold).float().view(-1)
-        inter = (labels * outputs).sum()
-        den = labels.sum() + outputs.sum()
-        dice = ((2. * inter + epsilon) / (den + epsilon))
-        return dice
+    # def metric_function(self, outputs, labels, epsilon=0.001, threshold = 0.5):
+        # self.threshold = threshold
+        # outputs = torch.sigmoid(outputs)
+        # labels = (labels.view(-1) != 0)
+        # outputs = (outputs > self.threshold).float().view(-1)
+        # inter = (labels * outputs).sum()
+        # den = labels.sum() + outputs.sum()
+        # dice = ((2. * inter + epsilon) / (den + epsilon))
+        # return dice
+
+    def metric_function(self,outputs, labels):
+        return torch.mean((labels - outputs)**2)
 
     def seed_everything(self, seed):
         os.environ['PYTHONHASHSEED'] = str(seed)

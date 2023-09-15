@@ -8,7 +8,7 @@ import model_classes as mc
 def create_model(accelerate):
     
     # model = timm.create_model(Hyperparams.encoder_name ,in_chans=1,num_classes = 10 ,pretrained=True)
-    model = mc.AutoEncoder(encoder_name = Hyperparams.encoder_name, latent_dim = 2)
+    model = mc.AutoEncoder(encoder_name = Hyperparams.encoder_name, latent_dim = Hyperparams.latent_space)
     model = model.float()
     
     return accelerate.prepare(model)

@@ -8,17 +8,17 @@ class AutoEncoder(nn.Module):
         
         # encoder
         self.encoder = timm.create_model(encoder_name,in_chans=1, pretrained=True,)
-        # num_embeddings  = self.encoder.classifier.in_features
+        num_embeddings  = self.encoder.classifier.in_features
         modules = list(self.encoder.children())[:-1]
         self.encoder = nn.Sequential(*modules)
         
-        self.latent_layer = nn.Linear(1280, latent_dim)
+        self.latent_layer = nn.Linear(num_embeddings, latent_dim)
         
         # decoder
-        self.decoder_input = nn.Linear(latent_dim, 1280)
+        self.decoder_input = nn.Linear(latent_dim, num_embeddings)
         
         self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(1280, 512, kernel_size=2, stride=2),  # 1x1 to 2x2
+            nn.ConvTranspose2d(num_embeddings, 512, kernel_size=2, stride=2),  # 1x1 to 2x2
             nn.ReLU(),
             
             nn.ConvTranspose2d(512, 256, kernel_size=2, stride=2),  # 2x2 to 4x4
