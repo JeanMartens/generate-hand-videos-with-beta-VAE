@@ -63,3 +63,4 @@ class AutoEncoder(nn.Module):
         x = self.decoder(x)
         return x
 
+

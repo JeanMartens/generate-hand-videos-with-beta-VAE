@@ -12,7 +12,7 @@ class Hyperparams:
     batch_size_valid = 256
     weight_decay = 1e-5
     img_shape = (28,28,1)
-    latent_space = 2
+    latent_space = 10
 
 
     #Model params
