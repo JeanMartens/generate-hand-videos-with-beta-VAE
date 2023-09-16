@@ -69,7 +69,7 @@ class VariationalAutoEncoder(nn.Module):
         
         # encoder
         self.encoder = timm.create_model(encoder_name, in_chans=1, pretrained=True,)
-        num_embeddings = self.encoder.classifier.in_features
+        num_embeddings = self.encoder.fc.in_features
         modules = list(self.encoder.children())[:-1]
         self.encoder = nn.Sequential(*modules)
         
@@ -107,12 +107,9 @@ class VariationalAutoEncoder(nn.Module):
 
         
     def reparameterize(self, x_mu, x_logvar, training=True):
-
         x_std = torch.exp(x_logvar / 2)
-        if training:
-            z = x_mu + x_std * self.norm.sample(x_mu.shape).to(x_mu.device)
-        else:
-            z = x_mu
+
+        z = x_mu + x_std * self.norm.sample(x_mu.shape).to(x_mu.device)
         return z
 
         
@@ -129,19 +126,18 @@ class VariationalAutoEncoder(nn.Module):
         x = x.view(x.size(0), -1, 1, 1)
         x = self.decoder(x)
         
-        # Return reconstruction, mu, and logvar for loss calculation
         return x , x_mu, x_logvar
 
     def encode(self, x, get_stats = False ):
         x = self.encoder(x)
         x = x.view(x.size(0), -1)
         x_mu = self.mu_layer(x)
-        x_std = self.logvar_layer(x)
+        x_logvar = self.logvar_layer(x)
     
-        z = self.reparameterize(x_mu, x_std, training=self.training)
+        z = self.reparameterize(x_mu, x_logvar, training=self.training)
         
         if get_stats :
-            return z, x_mu,  torch.exp(x_std / 2)
+            return z, x_mu,  x_logvar
         else : 
             return z
 
