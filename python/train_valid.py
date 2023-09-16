@@ -60,9 +60,9 @@ class ModelTrainer:
             inputs, labels, weights = inputs.float(), labels.float(), weights.float()
             
             self.optimizer.zero_grad()
-            outputs = self.model(inputs)
+            outputs, outputs_mu, outputs_logvar = self.model(inputs)
             
-            loss = self.criterion(outputs, labels)
+            loss = self.criterion(outputs, labels,outputs_mu, outputs_logvar)
             loss = loss.sum(dim=0) * weights
             loss = loss.sum()
             train_running_loss += loss.item()
@@ -87,8 +87,8 @@ class ModelTrainer:
                 inputs, labels ,weights = data
                 inputs, labels, weights = inputs.float(), labels.float(), weights.float()
                 
-                outputs = self.model(inputs)
-                loss = self.criterion(outputs, labels)
+                outputs, outputs_mu, outputs_logvar = self.model(inputs)
+                loss = self.criterion(outputs, labels,outputs_mu, outputs_logvar)
                 loss = loss.sum(dim=0) * weights
                 loss = loss.sum()
                 valid_running_loss += loss.item()
