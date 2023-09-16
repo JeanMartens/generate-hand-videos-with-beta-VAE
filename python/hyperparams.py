@@ -12,7 +12,7 @@ class Hyperparams:
     batch_size_valid = 256
     weight_decay = 0
     img_shape = (28,28,1)
-    latent_space = 10
+    latent_space = 20
 
 
     #Model params
@@ -27,7 +27,7 @@ class Hyperparams:
     random_state = 19
 
     normalise_transform = transforms.Compose([
-        transforms.Normalize(mean=(159.5), std=(115.7570))
+        transforms.Normalize(mean=(159.5562), std=(48.8289))
         ])
 
     augment_transform = A.Compose([

@@ -16,7 +16,7 @@ class PreprocessedDataset(Dataset):
         self.metadata_df = metadata_df
         self.train = train
         # self.all_images = all_images
-        self.all_images = F.adjust_sharpness(torch.tensor(all_images),15).squeeze(1).numpy()
+        self.all_images = F.adjust_sharpness(torch.tensor(all_images),1).squeeze(1).numpy()
         self.normalise_transform = normalise_tranform
         self.resize = A.Resize(Hyperparams.img_shape[0], Hyperparams.img_shape[1],interpolation=cv2.INTER_LANCZOS4, always_apply=True)
 
