@@ -1,4 +1,4 @@
-# Training and infering of an AutoEncoder for Image Generation
+# Training and testing of a Varitional-AutoEncoder for Image Generation
 
 With this repository, you can train and generate data (MNIST here) for all kinds of encoder. This can also be use to pretrain a model in a Unsupervised learning fashion.
 This is what this can get you:
