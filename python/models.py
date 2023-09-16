@@ -8,7 +8,8 @@ import model_classes as mc
 def create_model(accelerate):
     
     # model = mc.AutoEncoder(encoder_name = Hyperparams.encoder_name, latent_dim = Hyperparams.latent_space)
-    model = mc.VariationalAutoEncoder(encoder_name = Hyperparams.encoder_name, latent_dim = Hyperparams.latent_space)
+    # model = mc.VariationalAutoEncoder(encoder_name = Hyperparams.encoder_name, latent_dim = Hyperparams.latent_space)
+    model = mc.VanillaVariationalAutoEncoder(num_embeddings = 1024, latent_dim = Hyperparams.latent_space)
     model = model.float()
     
     return accelerate.prepare(model)
