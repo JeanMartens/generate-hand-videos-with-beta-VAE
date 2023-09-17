@@ -14,3 +14,7 @@ runs/*
 running_models/*
 **/.ipynb_checkpoints/*
 **/__pycache__/*
+data/kaggle.json
+data/metadatas/sign_mnist_metadata.csv
+data/raw_sign_language_mnist/*
+data/sign_language_images/*

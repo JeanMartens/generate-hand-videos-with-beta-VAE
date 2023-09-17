@@ -4,13 +4,10 @@ import torch
 class MseKlLoss(nn.Module):
     def __init__(self, beta=1e-4):
         super(MseKlLoss, self).__init__()
-        self.mse = nn.MSELoss()
+        self.mse = nn.MSELoss(reduction  = 'sum')
         self.beta = beta
 
     def kl_divergence(self, mu, logvar):
-        # KL divergence between the learned distribution and standard normal distribution
-        # kl = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
-        # kl = -0.5 * torch.sum(1 + logvar - (mu.pow(2))* 0.1 - logvar.exp() * 10)
 
         std = torch.exp(logvar / 2)
         kl = (0.5) * torch.sum(std.pow(2) + mu.pow(2) -1 - torch.log(std**2))

@@ -6,17 +6,17 @@ import cv2
 class Hyperparams:
     
     #Training Params
-    lr = 1e-3
-    num_epochs = 10
+    lr = 5e-4
+    num_epochs = 20
     batch_size_train = 256
     batch_size_valid = 256
-    weight_decay = 1e-5
+    weight_decay = 0
     img_shape = (28,28,1)
-    latent_space = 2
+    latent_space = 20
 
 
     #Model params
-    encoder_name = 'resnet50'
+    encoder_name = 'efficientnet_b2'
 
 
     #Folds params
@@ -27,13 +27,13 @@ class Hyperparams:
     random_state = 19
 
     normalise_transform = transforms.Compose([
-        transforms.Normalize(mean=(33.385964741253645), std=(78.6543736268941))
+        transforms.Normalize(mean=(159.5562), std=(48.8289))
         ])
 
     augment_transform = A.Compose([
-        A.HorizontalFlip(),
-        A.VerticalFlip(),
-        A.RandomRotate90(),
+        # A.HorizontalFlip(),
+        # A.VerticalFlip(),
+        # A.RandomRotate90(),
     ], p=0.6)
 
 

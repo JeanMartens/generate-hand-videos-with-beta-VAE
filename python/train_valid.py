@@ -11,6 +11,7 @@ from accelerate import Accelerator, DistributedDataParallelKwargs,DistributedTyp
 import accelerate.utils as accelerate_utils
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
+from itertools import chain, repeat
 
 from hyperparams import Hyperparams
 from models import model_naming_function
@@ -53,7 +54,10 @@ class ModelTrainer:
         self.model.train()
         self.accelerate.print('Training')
         train_running_loss = 0.0
-        stream = tqdm(trainloader, total=len(trainloader), disable=not self.accelerate.is_local_main_process, )
+        # stream = tqdm(trainloader, total=len(trainloader), disable=not self.accelerate.is_local_main_process, )
+
+        stream = tqdm(chain.from_iterable(repeat(trainloader, 10)), total=10*len(trainloader), disable=not self.accelerate.is_local_main_process)
+
         
         for i, data in enumerate(stream):
             inputs, labels, weights = data
@@ -61,8 +65,10 @@ class ModelTrainer:
             
             self.optimizer.zero_grad()
             outputs, outputs_mu, outputs_logvar = self.model(inputs)
+            # outputs = self.model(inputs)
             
             loss = self.criterion(outputs, labels,outputs_mu, outputs_logvar)
+            # loss = self.criterion(outputs, labels)
             loss = loss.sum(dim=0) * weights
             loss = loss.sum()
             train_running_loss += loss.item()
@@ -88,7 +94,10 @@ class ModelTrainer:
                 inputs, labels, weights = inputs.float(), labels.float(), weights.float()
                 
                 outputs, outputs_mu, outputs_logvar = self.model(inputs)
+                # outputs = self.model(inputs)
+                
                 loss = self.criterion(outputs, labels,outputs_mu, outputs_logvar)
+                # loss = self.criterion(outputs, labels)
                 loss = loss.sum(dim=0) * weights
                 loss = loss.sum()
                 valid_running_loss += loss.item()

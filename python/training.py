@@ -15,8 +15,8 @@ from stratified_kfold_loaders import *
 from torch.cuda.amp import autocast
 
 #Mock metadata
-metadata = pd.read_csv('data/metadatas/metadata.csv')
-all_images = np.load('data/images_labels/images.npy')
+metadata = pd.read_csv('data/metadatas/sign_mnist_metadata.csv')
+all_images = np.load('data/sign_language_images/images.npy')
 
 train_loaders, valid_loaders, splits_as_list = kfold_loaders(
         metadata = metadata, 
@@ -28,7 +28,7 @@ train_loaders, valid_loaders, splits_as_list = kfold_loaders(
         random_state=Hyperparams.random_state)
 
 # criterion = nn.MSELoss()
-criterion = MseKlLoss(beta=1e-5)
+criterion = MseKlLoss(beta=2)
 
 training_instance = ModelTrainer(create_model, train_loaders,valid_loaders,criterion)
 

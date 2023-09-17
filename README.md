@@ -1,10 +1,11 @@
-# Training and testing of a Varitional-AutoEncoder for Image Generation
+# Training and using Beta-VAE latent space to generate videos of hang movements
 
-With this repository, you can train and generate data (MNIST here) for all kinds of encoder. This can also be use to pretrain a model in a Unsupervised learning fashion.
-This is what this can get you:
+Here's an 100% articial video produced by the model traied with the repo:
+![](plots/animation.gif)
 
+The way to do it is simple: 
+- Train a Beta-VAE with the Beta parameter set high. 
+- Look a what happens with variations of the latent vector dimensions, take one that produces interesting variations (like here the height of the index finger)
+- Make a Gif with all the variations.
 
-![](plots/efficientnet_b0.png)
-
-Feel free to use this repo for anything you like but since this is a project simply to build my intuition for VAE and GANs, I advise you code it yourself for the same purpose.
-If you like the structure of the code, you can find my Computer Vision baseline here: 
+I was inspired by this paper: https://openreview.net/pdf?id=Sy2fzU9gl
