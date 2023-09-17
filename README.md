@@ -1,7 +1,7 @@
 # Training and using Beta-VAE latent space to generate videos of hang movements
 
 Here's an 100% articial video produced by the model traied with the repo:
-[](plots/animation.gif)
+![](plots/animation.gif)
 
 The way to do it is simple: 
 - Train a Beta-VAE with the Beta parameter set high. 
